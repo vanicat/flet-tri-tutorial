@@ -43,10 +43,8 @@ class MyConteneur:
 
     @selected.setter
     def selected(self, v:bool):
-        print("set", self._button.selected, "to", v)
         self._button.selected = v
         self._app.page.update()
-        print("done:", self._button.selected)
 
     @property
     def numicon(self):
@@ -73,14 +71,11 @@ class MyConteneur:
         self._app.page.update()
         
     def on_click(self, ev):
-        print("open", self.selected)
         self.selected = not self.selected
-        print("close", self.selected)
 
     def on_accept_drag(self, ev:ft.DragTargetAcceptEvent):
         src = self._app.page.get_control(ev.src_id).data
         src.numicon, self.numicon = self.numicon, src.numicon
-        print(src)
 
 class NoApp:
     def update(self):
