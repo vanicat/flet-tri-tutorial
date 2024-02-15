@@ -31,10 +31,22 @@ class IconGenerator:
 
 class MyConteneur:
     def __init__(self, numicon:int, app:"MyApp") -> None:
+        self.inserable = False
         self.cont = ft.Container()
         self._app = app
         self.numicon = numicon
         self.selected = False
+
+    @property
+    def selected(self):
+        return self._button.selected
+
+    @selected.setter
+    def selected(self, v:bool):
+        print("set", self._button.selected, "to", v)
+        self._button.selected = v
+        self._app.page.update()
+        print("done:", self._button.selected)
 
     @property
     def numicon(self):
@@ -48,19 +60,34 @@ class MyConteneur:
             selected=False,
             selected_icon=self._app.icons.get_outlined(num),
             on_click=self.on_click)
-        self.cont.content = self._button
+        self.cont.content = ft.DragTarget(
+            group="icone",
+            on_accept=self.on_accept_drag,
+            content=ft.Draggable(
+                group="icone",
+                content=self._button,
+                data=self
+            )
+        )
+        
         self._app.page.update()
         
     def on_click(self, ev):
+        print("open", self.selected)
         self.selected = not self.selected
+        print("close", self.selected)
 
-        self._button.selected = self.selected
-        self._app.page.update()
-
+    def on_accept_drag(self, ev:ft.DragTargetAcceptEvent):
+        src = self._app.page.get_control(ev.src_id).data
+        src.numicon, self.numicon = self.numicon, src.numicon
+        print(src)
 
 class NoApp:
     def update(self):
         pass
+
+    def get_control(self):
+        assert False, "Intialisation of page not done yet"
 
 class MyApp:
     def __init__(self, nb:int) -> None:
