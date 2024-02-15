@@ -74,14 +74,16 @@ class MyConteneur:
         self.selected = not self.selected
 
     def on_accept_drag(self, ev:ft.DragTargetAcceptEvent):
-        src = self._app.page.get_control(ev.src_id).data
+        ctrl = self._app.page.get_control(ev.src_id)
+        assert ctrl is not None, "event on non existing control"
+        src = ctrl.data
         src.numicon, self.numicon = self.numicon, src.numicon
 
 class NoApp:
     def update(self):
         pass
 
-    def get_control(self):
+    def get_control(self, id):
         assert False, "Intialisation of page not done yet"
 
 class MyApp:
