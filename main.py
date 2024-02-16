@@ -34,10 +34,12 @@ class IconGenerator:
         return self.ICONS[self.order[v]] + "_outlined"
 
 class MyConteneur:
-    def __init__(self, numicon:int, app:"MyApp") -> None:
+    def __init__(self, numicon:int, app:"MyApp", draggable = True, permutable = True) -> None:
         self.inserable = False
         self.cont = ft.Container()
         self._app = app
+        self.draggable = draggable
+        self.permutable = permutable
         self.numicon = numicon
         self.selected = False
 
@@ -62,14 +64,18 @@ class MyConteneur:
             selected=False,
             selected_icon=self._app.icons.get_outlined(num),
             on_click=self.on_click)
-        self.cont.content = ft.DragTarget(
-            group="icone",
-            on_accept=self.on_accept_drag,
-            content=ft.Draggable(
+        if self.draggable:
+            target_content = ft.Draggable(
                 group="icone",
                 content=self._button,
                 data=self
             )
+        else:
+            target_content = self._button
+        self.cont.content = ft.DragTarget(
+            group="icone",
+            on_accept=self.on_accept_drag,
+            content = target_content
         )
         
         self._app.page.update()
@@ -81,7 +87,10 @@ class MyConteneur:
         ctrl = self._app.page.get_control(ev.src_id)
         assert ctrl is not None, "event on non existing control"
         src = ctrl.data
-        src.numicon, self.numicon = self.numicon, src.numicon
+        if self.permutable:
+            src.numicon, self.numicon = self.numicon, src.numicon
+        else:
+            self.numicon = src.numicon
 
 class NoApp:
     def update(self):
