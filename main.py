@@ -112,12 +112,19 @@ class MyApp:
         self.page = page
         page.add(ft.SafeArea(ft.Text("Trouver un algorithme de tri")))
         buttons_row = ft.Row([
-            ft.TextButton("aide", on_click=self.help),
-            ft.TextButton("cmp", on_click=self.cmp)
+            ft.TextButton("aide", on_click=self.help)
         ])
         page.add(buttons_row)
         self._message = ft.Text()
-        page.add(ft.SafeArea(self._message))
+        self.cmp1 = MyConteneur(-1, self, False, False)
+        self.cmp2 = MyConteneur(-1, self, False, False)
+        page.add(ft.Row([
+            self.cmp1.cont,
+            ft.Text("≤", size=30),
+            self.cmp2.cont,
+            ft.TextButton("compare", on_click=self.cmp),
+            self._message
+        ]))
         page.add(ft.Row([
             ic.cont for ic in self.contents
         ]))
@@ -142,15 +149,12 @@ class MyApp:
         ]
 
     def cmp(self, ev):
-        selected = self.selected
-        if len(selected) != 2:
-            self.message = "selectionne deux icônes pour les comparer"
-            return
-        
-        a, b = selected
-        if a.numicon < b.numicon:
-            self.message = "le premier est plus petit que le deuxième"
+        if self.cmp1.numicon == -1 or self.cmp2.numicon == -1:
+            self.message = "glisse deux valeurs à gauche pour les comparer"
+
+        if self.cmp1.numicon <= self.cmp2.numicon:
+            self.message = "Vrai"
         else:
-            self.message = "le deuxième est plus petit que le premier"
+            self.message = "Faux"
     
 ft.app(MyApp(10).setup)
