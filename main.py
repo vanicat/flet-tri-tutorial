@@ -24,9 +24,13 @@ class IconGenerator:
         self.order = random.sample(range(len(self.ICONS)), nb)
 
     def get_std(self, v: int) -> str:
+        if v == -1:
+            return ft.icons.DO_NOT_DISTURB
         return self.ICONS[self.order[v]]
     
     def get_outlined(self, v: int) -> str:
+        if v == -1:
+            return ft.icons.DO_NOT_DISTURB_OUTLINED
         return self.ICONS[self.order[v]] + "_outlined"
 
 class MyConteneur:
